@@ -1,1 +1,1061 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>칼끝과 펜끝이 젖어 드는 밤</title>
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600&family=Noto+Serif+KR:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #171411;
+      --surface: #211c16;
+      --text: #f3ede2;
+      --muted: #b8b2a8;
+      --gold: #c6a66b;
+      --line: rgba(198, 166, 107, .2);
+      --header: rgba(23, 20, 17, .95);
+      --serif: "Noto Serif KR", serif;
+      --sans: "Noto Sans KR", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 90px;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 15px/1.9 var(--sans);
+      word-break: keep-all;
+      overflow-wrap: break-word;
+    }
+
+    body.light {
+      color-scheme: light;
+      --bg: #f4efe6;
+      --surface: #e9e1d4;
+      --text: #302820;
+      --muted: #70665b;
+      --gold: #94723e;
+      --line: rgba(148, 114, 62, .25);
+      --header: rgba(244, 239, 230, .95);
+    }
+
+    h1, h2, h3, p {
+      margin: 0;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    a:focus-visible,
+    button:focus-visible,
+    summary:focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 5px;
+    }
+
+    .container {
+      width: min(100% - 48px, 1000px);
+      margin-inline: auto;
+    }
+
+    /* 상단 내비게이션 */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: var(--header);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(12px);
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 64px;
+    }
+
+    .menu {
+      position: relative;
+    }
+
+    .menu summary,
+    .icon-link,
+    .theme-toggle {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 42px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--text);
+      font-size: 21px;
+      cursor: pointer;
+      list-style: none;
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    summary::marker {
+      content: "";
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+
+    .menu-panel {
+      position: absolute;
+      top: 54px;
+      left: 0;
+      width: 250px;
+      max-width: calc(100vw - 40px);
+      max-height: calc(100dvh - 90px);
+      padding: 14px;
+      overflow-y: auto;
+      border: 1px solid var(--line);
+      background: var(--bg);
+    }
+
+    .menu-panel a,
+    .menu-about-button {
+      display: block;
+      width: 100%;
+      padding: 9px 12px;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .menu-panel a:hover,
+    .menu-about-button:hover,
+    .icon-link:hover,
+    .theme-toggle:hover {
+      color: var(--gold);
+    }
+
+    /* 작가소개: 외부 이동 없이 메뉴 안에서 아래로 펼치는 구간 */
+    .about-copy {
+      margin: 3px 12px 12px;
+      padding: 12px 0;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.9;
+    }
+
+    /* 메인 이미지: 위는 진하게, 아래로 갈수록 투명하게 */
+    .hero {
+      position: relative;
+      isolation: isolate;
+      display: flex;
+      align-items: center;
+      min-height: 600px;
+      padding-block: 90px;
+      background: #171411;
+      color: #f3ede2;
+      overflow: hidden;
+    }
+
+    .hero-image {
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      -webkit-mask-image: linear-gradient(
+        to bottom,
+        #000 0%,
+        #000 30%,
+        transparent 100%
+      );
+      mask-image: linear-gradient(
+        to bottom,
+        #000 0%,
+        #000 30%,
+        transparent 100%
+      );
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background: linear-gradient(
+        90deg,
+        rgba(23, 20, 17, .8),
+        rgba(23, 20, 17, .25)
+      );
+    }
+
+    .hero-copy {
+      max-width: 660px;
+      font-size: 16px;
+    }
+
+    /* 첫 화면 CHEF × CRITIC: 13px 유지 */
+    .eyebrow {
+      color: #c6a66b;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: .24em;
+    }
+
+    /* STORY / CHARACTERS 등 영역 제목: 16px */
+    .section-title {
+      margin-bottom: 34px;
+      color: var(--gold);
+      font-size: 16px;
+      font-weight: 500;
+      letter-spacing: .24em;
+      text-align: center;
+    }
+
+    .hero h1 {
+      margin-top: 22px;
+      font: 600 clamp(35px, 5.6vw, 58px)/1.5 var(--serif);
+      letter-spacing: -.04em;
+    }
+
+    /* 기존 제목 아래 짧은 가로선은 삭제 */
+    .hero-subtitle {
+      margin-top: 27px;
+      color: #e2d8c7;
+      font-size: 16px;
+    }
+
+    /*
+      첫 화면 강조문 인용 구간:
+      blockquote의 기본 여백을 초기화하고
+      border-left로 왼쪽 골드 선을 표시합니다.
+      선 두께는 2px, 선과 글 사이 간격은 padding-left로 조절합니다.
+    */
+    .hero-quote {
+      max-width: 560px;
+      margin: 23px 0 0;
+      padding: 0 0 0 18px;
+      border-left: 2px solid #c6a66b;
+      color: #c6a66b;
+      font: italic 17px/2 var(--serif);
+    }
+
+    /* 본문 영역 */
+    .section {
+      padding-block: 62px;
+    }
+
+    /* 스토리 본문: 모바일과 PC 모두 16px */
+    .story-copy {
+      max-width: 740px;
+      margin-inline: auto;
+      color: var(--muted);
+      font-size: 16px;
+      text-align: center;
+      line-height: 2.1;
+    }
+
+    .story-copy p + p {
+      margin-top: 22px;
+    }
+
+    /* 영역 사이 구분점: 여섯 개 */
+    .section-divider {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      padding-block: 8px;
+      color: var(--gold);
+      opacity: .65;
+      font-size: 17px;
+      line-height: 1;
+    }
+
+    /* 캐릭터: 선우재 이미지 왼쪽 / 백아진 이미지 오른쪽 */
+    .character-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 44px;
+      align-items: center;
+    }
+
+    .character-row + .character-row {
+      margin-top: 58px;
+    }
+
+    .character-image {
+      min-width: 0;
+    }
+
+    .character-image img {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+    }
+
+    .sunwoo img {
+      object-position: center 25%;
+      -webkit-mask-image: linear-gradient(
+        to right,
+        #000 0%,
+        #000 65%,
+        transparent 100%
+      );
+      mask-image: linear-gradient(
+        to right,
+        #000 0%,
+        #000 65%,
+        transparent 100%
+      );
+    }
+
+    .ajin img {
+      object-position: center 50%;
+      -webkit-mask-image: linear-gradient(
+        to left,
+        #000 0%,
+        #000 65%,
+        transparent 100%
+      );
+      mask-image: linear-gradient(
+        to left,
+        #000 0%,
+        #000 65%,
+        transparent 100%
+      );
+    }
+
+    .character-role {
+      color: var(--gold);
+      font-size: 11px;
+      letter-spacing: .22em;
+    }
+
+    .character-copy h3 {
+      margin-top: 7px;
+      font: 500 28px/1.6 var(--serif);
+    }
+
+    .character-meta {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .character-highlight {
+      margin-top: 22px;
+      color: var(--gold);
+      font: 17px/1.9 var(--serif);
+    }
+
+    .character-description {
+      margin-top: 15px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* 장소 이미지 */
+    .places-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+
+    .place-image {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      margin-bottom: 22px;
+      background: var(--surface);
+      overflow: hidden;
+    }
+
+    .place-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scale(1);
+      transition: transform .55s ease;
+    }
+
+    /* 마우스오버 시 사진만 확대 */
+    @media (hover: hover) and (pointer: fine) {
+      .place-image:hover img {
+        transform: scale(1.08);
+      }
+    }
+
+    .place-card h3 {
+      font: 500 20px/1.8 var(--serif);
+    }
+
+    .place-card h3 small {
+      margin-left: 5px;
+      color: var(--gold);
+      font: 11px var(--sans);
+      letter-spacing: .12em;
+    }
+
+    .place-card p {
+      margin-top: 13px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* 에피소드: 원형 보더 없이 + / − */
+    .episode {
+      border-bottom: 1px solid var(--line);
+    }
+
+    .episode:first-child {
+      border-top: 1px solid var(--line);
+    }
+
+    .episode summary {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding-block: 22px;
+      cursor: pointer;
+      list-style: none;
+    }
+
+    .episode-number {
+      flex: 0 0 35px;
+      color: var(--gold);
+      font: 21px var(--serif);
+    }
+
+    .episode-name {
+      flex: 1;
+      min-width: 0;
+      font: 500 18px/1.8 var(--serif);
+    }
+
+    .episode-icon {
+      flex: 0 0 24px;
+      color: var(--gold);
+      font: 25px/1 var(--sans);
+      text-align: center;
+    }
+
+    .episode-icon::before {
+      content: "+";
+    }
+
+    .episode[open] .episode-icon::before {
+      content: "−";
+    }
+
+    .episode-description {
+      padding: 0 42px 26px 53px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* 플레이 가이드 */
+    .guide-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+    }
+
+    .guide-number {
+      color: var(--gold);
+      font: 23px var(--serif);
+    }
+
+    .guide-card h3 {
+      margin-top: 14px;
+      font: 500 18px/1.8 var(--serif);
+    }
+
+    .guide-card p {
+      margin-top: 13px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* 플랫폼 영역 */
+    .with-section {
+      padding-block: 62px 70px;
+      text-align: center;
+    }
+
+    .with-section .section-title {
+      margin-bottom: 0;
+    }
+
+    /*
+      이전 '함께 요리하기' 주변 여백 원인:
+      소제목 margin-top:15px, 플랫폼 목록 margin-top:30px,
+      텍스트 line-height가 함께 적용되었기 때문입니다.
+      소제목은 삭제했으며 현재 간격은 아래 margin-top으로 조절합니다.
+    */
+    .platform-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 28px;
+      margin-top: 20px;
+      line-height: 1.5;
+    }
+
+    .platform-links a,
+    .platform-links span {
+      font-size: 14px;
+    }
+
+    .platform-links a:hover {
+      color: var(--gold);
+    }
+
+    .platform-placeholder {
+      color: var(--muted);
+    }
+
+    /* 푸터: 13px, 저작권 설명에 강제 줄바꿈 없음 */
+    .site-footer {
+      padding: 38px 24px 46px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      text-align: center;
+      font-size: 13px;
+      line-height: 1.9;
+    }
+
+    .copyright-title {
+      color: var(--gold);
+      font-size: 13px;
+      letter-spacing: .18em;
+    }
+
+    .copyright-description {
+      margin-top: 17px;
+    }
+
+    .creator-credit {
+      margin-top: 19px;
+    }
+
+    .creator-name {
+      margin-top: 5px;
+      color: var(--text);
+    }
+
+    @media (max-width: 650px) {
+      .container {
+        width: calc(100% - 40px);
+      }
+
+      .hero {
+        min-height: 550px;
+        padding-block: 72px;
+      }
+
+      .hero-subtitle {
+        font-size: 14px;
+      }
+
+      .section {
+        padding-block: 43px;
+      }
+
+      .section-title {
+        margin-bottom: 28px;
+      }
+
+      /* 스토리 글자 크기는 16px 유지, 정렬만 변경 */
+      .story-copy {
+        text-align: left;
+      }
+
+      .character-row {
+        grid-template-columns: 1fr;
+        gap: 22px;
+      }
+
+      .character-row + .character-row {
+        margin-top: 46px;
+      }
+
+      .ajin-row .character-image {
+        grid-row: 1;
+      }
+
+      .ajin-row .character-copy {
+        text-align: right;
+      }
+
+      .character-copy h3 {
+        font-size: 25px;
+      }
+
+      .character-highlight {
+        margin-top: 17px;
+        font-size: 16px;
+      }
+
+      .places-grid {
+        grid-template-columns: 1fr;
+        gap: 35px;
+      }
+
+      .episode summary {
+        gap: 12px;
+      }
+
+      .episode-number {
+        flex-basis: 28px;
+        font-size: 19px;
+      }
+
+      .episode-name {
+        font-size: 16px;
+      }
+
+      .episode-description {
+        padding-left: 40px;
+        padding-right: 10px;
+        font-size: 13px;
+      }
+
+      .guide-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+      }
+
+      .guide-card h3 {
+        margin-top: 8px;
+      }
+
+      .guide-card p {
+        margin-top: 9px;
+      }
+
+      .with-section {
+        padding-block: 43px 52px;
+      }
+
+      /* 모바일 X/메일 간격: gap 0, 각 영역 폭 32px */
+      .header-actions {
+        gap: 0;
+      }
+
+      .header-actions .icon-link,
+      .header-actions .theme-toggle {
+        width: 32px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      .place-image img {
+        transition: none;
+      }
+
+      .place-image:hover img {
+        transform: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- 상단 내비게이션 -->
+  <header class="site-header">
+    <div class="container topbar">
+      <details class="menu" id="site-menu">
+        <summary aria-label="메뉴 열기">☰</summary>
+
+        <nav class="menu-panel" aria-label="주요 메뉴">
+          <!-- 작가소개: 외부 링크가 아닌 메뉴 내부 펼침 버튼 -->
+          <button
+            class="menu-about-button"
+            id="aboutButton"
+            type="button"
+            aria-expanded="false"
+            aria-controls="aboutCopy"
+          >About Me</button>
+
+          <!-- 작가소개 문구 수정 위치 -->
+          <div class="about-copy" id="aboutCopy" hidden>
+            당신이 주인공이 되는 다채로운 서사의 세계, AI 채팅 크리에이터 아몬드송송입니다.
+          </div>
+
+          <!-- <a href="https://almondsongsong.github.io/profile/">작품목록</a> -->
+          <a href="#chef-story">STORY</a>
+          <a href="#chef-characters">CHARACTERS</a>
+          <a href="#chef-episodes">EPISODES</a>
+          <a href="#chef-platforms">PORTFOLIO</a>
+        </nav>
+      </details>
+
+      <div class="header-actions">
+        <a
+          class="icon-link"
+          href="https://x.com/almondsongsong"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="아몬드송송 X"
+        >𝕏</a>
+
+        <a
+          class="icon-link"
+          href="mailto:almondsongsong@gmail.com"
+          aria-label="이메일 보내기"
+        >✉</a>
+
+        <button
+          class="theme-toggle"
+          id="theme-toggle"
+          type="button"
+          aria-label="밝은 테마로 전환"
+          aria-pressed="false"
+        >◐</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- 금빛 오뜨 메인 이미지 -->
+    <section class="hero" aria-labelledby="work-title">
+      <img
+        class="hero-image"
+        src="https://github.com/user-attachments/assets/a065e005-458d-4131-9b4f-10a03670bd39"
+        alt=""
+        fetchpriority="high"
+      >
+
+      <div class="container">
+        <div class="hero-copy">
+          <p class="eyebrow">CHEF × CRITIC</p>
+          <h1 id="work-title">칼끝과 펜끝이<br>젖어 드는 밤</h1>
+
+          <!-- 기존 제목 아래 가로선 삭제 -->
+          <p class="hero-subtitle">
+            요리와 글의 맛, 그리고 뜨거운 밤의 이야기
+          </p>
+
+          <!-- 인용 강조문: .hero-quote의 border-left가 왼쪽 선 -->
+          <blockquote class="hero-quote">
+            서늘했던 선우재의 칼끝도, 날카롭던 당신의 펜 끝도.
+            조명이 꺼진 방 안에서는 그저 서로를 베고 집어삼키는 도구일 뿐.
+          </blockquote>
+        </div>
+      </div>
+    </section>
+
+    <!-- 스토리: 첫 문장 뒤 줄바꿈 -->
+    <section class="section container" id="chef-story">
+      <h2 class="section-title">STORY</h2>
+
+      <div class="story-copy">
+        <p>미식 매거진 《아티장》에 실린 익명의 혹평 한 줄이 스타 셰프 선우재의 명성을 흔들었다.<br>돌아온 것은 고소장, 그리고 취하를 위한 조건—72시간의 주방 밀착 취재.</p>
+        <p>비판이 존중으로 바뀔 수 있는지, 취재와 사적인 감정을 어떻게 구분할지는 두 사람의 대화가 결정한다.</p>
+      </div>
+    </section>
+
+    <div class="section-divider" aria-hidden="true">
+      <span>·</span><span>·</span><span>·</span><span>·</span><span>·</span><span>·</span>
+    </div>
+
+    <!-- 캐릭터 -->
+    <section class="section container" id="chef-characters">
+      <h2 class="section-title">CHARACTERS</h2>
+
+      <!-- 선우재: 이미지 왼쪽 -->
+      <article class="character-row">
+        <div class="character-image sunwoo">
+          <img
+            src="https://github.com/user-attachments/assets/f04c514d-04f1-4901-bc31-94b3c9e893cd"
+            alt="선우재"
+            loading="lazy"
+          >
+        </div>
+
+        <div class="character-copy">
+          <p class="character-role">CHEF</p>
+          <h3>선우재</h3>
+          <p class="character-meta">32세 · 187cm · 오뜨의 오너 셰프</p>
+          <p class="character-highlight">완벽한 한 접시.<br>그 진심까지 의심받은 셰프.</p>
+          <p class="character-description">한 접시의 완성도에 타협하지 않는 완벽주의자. 익명의 혹평에 맞서, 매거진 에디터에게 직접 주방을 검증할 72시간을 내준다.</p>
+        </div>
+      </article>
+
+      <!-- 백아진: 이미지 오른쪽, 크롭 위치 50% -->
+      <article class="character-row ajin-row">
+        <div class="character-copy">
+          <p class="character-role">CRITIC</p>
+          <h3>백아진</h3>
+          <p class="character-meta">28세 · 《아티장》 에디터 · 익명 크리틱</p>
+          <p class="character-highlight">날카로운 한 줄.<br>그 대가로 주방에 들어선 비평가.</p>
+          <p class="character-description">필명 ‘블라인드 미식가’로 활동하는 날카로운 비평가. 자신의 글로 시작된 고소 위기를 해결하기 위해, 정체를 숨긴 채 오뜨의 주방에 들어간다.</p>
+        </div>
+
+        <div class="character-image ajin">
+          <img
+            src="https://github.com/user-attachments/assets/8d3f8ad2-e083-4cb1-939e-7fbb63065c2f"
+            alt="백아진"
+            loading="lazy"
+          >
+        </div>
+      </article>
+    </section>
+
+    <div class="section-divider" aria-hidden="true">
+      <span>·</span><span>·</span><span>·</span><span>·</span><span>·</span><span>·</span>
+    </div>
+
+    <!-- 장소: 아티장 왼쪽 / 오뜨 오른쪽 -->
+    <section class="section container" id="chef-places">
+      <h2 class="section-title">PLACES</h2>
+
+      <div class="places-grid">
+        <article class="place-card">
+          <!-- 아티장 이미지 교체 위치 -->
+          <div class="place-image">
+            <img
+              src="https://github.com/user-attachments/assets/cb07bea5-4497-4315-92bc-3aa618f3edeb"
+              alt="미식 매거진 아티장의 편집국"
+              loading="lazy"
+            >
+          </div>
+
+          <h3>아티장 <small>ARTISAN</small></h3>
+          <p>백아진이 에디터로 근무하는 미식 매거진. ‘블라인드 미식가’의 날카로운 비평을 게재한 뒤, 오뜨 측으로부터 고소장을 받는다.</p>
+        </article>
+
+        <article class="place-card">
+          <!-- 오뜨 이미지 교체 위치 -->
+          <div class="place-image">
+            <img
+              src="https://github.com/user-attachments/assets/7be21700-15d0-45ae-92b0-815884bd89ce"
+              alt="파인 다이닝 레스토랑 오뜨"
+              loading="lazy"
+            >
+          </div>
+
+          <h3>오뜨 <small>HAUTE</small></h3>
+          <p>선우재가 운영하는 미쉐린 1스타 파인 다이닝 레스토랑. 익명의 비평 한 줄로 명성과 투자 유치에 타격을 입자, 72시간의 주방 검증을 요구한다.</p>
+        </article>
+      </div>
+    </section>
+
+    <div class="section-divider" aria-hidden="true">
+      <span>·</span><span>·</span><span>·</span><span>·</span><span>·</span><span>·</span>
+    </div>
+
+    <!-- 에피소드 -->
+    <section class="section container" id="chef-episodes">
+      <h2 class="section-title">EPISODES</h2>
+
+      <div class="episode-list">
+        <details class="episode" name="chef-episode" open>
+          <summary>
+            <span class="episode-number">01</span>
+            <span class="episode-name">칼끝을 겨눈 비평 한 줄</span>
+            <span class="episode-icon" aria-hidden="true"></span>
+          </summary>
+          <p class="episode-description">익명의 혹평으로 시작된 고소 위기. 정체를 숨기고 오뜨를 찾은 백아진은 디저트 한 입에 자신의 비밀을 들킨다.</p>
+        </details>
+
+        <details class="episode" name="chef-episode">
+          <summary>
+            <span class="episode-number">02</span>
+            <span class="episode-name">72시간의 주방</span>
+            <span class="episode-icon" aria-hidden="true"></span>
+          </summary>
+          <p class="episode-description">72시간의 밀착 취재, 마지막 밤의 테이스팅. 선우재는 비평의 근거를 묻고, 백아진은 자신의 평가를 굽히지 않는다.</p>
+        </details>
+
+        <details class="episode" name="chef-episode">
+          <summary>
+            <span class="episode-number">03</span>
+            <span class="episode-name">조리대 위에서 젖어 드는 밤</span>
+            <span class="episode-icon" aria-hidden="true"></span>
+          </summary>
+          <p class="episode-description">정체가 드러난 뒤에도 물러서지 않는 두 사람. 자정의 주방, 차가운 조리대 앞에서 날카로운 신경전이 서로를 향한 끌림으로 번진다.</p>
+        </details>
+
+        <details class="episode" name="chef-episode">
+          <summary>
+            <span class="episode-number">04</span>
+            <span class="episode-name">오직 한 사람만을 위한 접시</span>
+            <span class="episode-icon" aria-hidden="true"></span>
+          </summary>
+          <p class="episode-description">새벽의 주방, 백아진만을 위해 내놓은 소박한 한 접시. 선우재의 새로운 얼굴을 마주한 그녀는 최종 기사에 담을 말을 고른다.</p>
+        </details>
+      </div>
+    </section>
+
+    <div class="section-divider" aria-hidden="true">
+      <span>·</span><span>·</span><span>·</span><span>·</span><span>·</span><span>·</span>
+    </div>
+
+    <!-- 플레이 가이드 -->
+    <section class="section container" id="chef-play">
+      <h2 class="section-title">PLAY GUIDE</h2>
+
+      <div class="guide-grid">
+        <article class="guide-card">
+          <p class="guide-number">01</p>
+          <h3>정체를 숨기고 버텨보기</h3>
+          <p>익명 비평가라는 사실을 감춘 채, 선우재의 날카로운 질문을 취재 에디터의 말솜씨로 받아쳐 보세요.</p>
+        </article>
+
+        <article class="guide-card">
+          <p class="guide-number">02</p>
+          <h3>한 접시를 두고 맞서보기</h3>
+          <p>쉽게 칭찬하거나 물러서지 말고, 맛과 진심에 대한 당신의 기준으로 셰프와 신경전을 펼쳐 보세요.</p>
+        </article>
+
+        <article class="guide-card">
+          <p class="guide-number">03</p>
+          <h3>취재 너머의 마음 들여다보기</h3>
+          <p>주방에서 발견한 그의 다른 얼굴. 기사에 담을 평가와 개인적인 끌림 사이에서 당신의 선택을 이어가 보세요.</p>
+        </article>
+      </div>
+    </section>
+
+    <div class="section-divider" aria-hidden="true">
+      <span>·</span><span>·</span><span>·</span><span>·</span><span>·</span><span>·</span>
+    </div>
+
+    <!-- 작품보러가기 메뉴의 이동 대상 -->
+    <section
+      class="with-section container"
+      id="chef-platforms"
+      aria-labelledby="with-title"
+    >
+      <h2 class="section-title" id="with-title">With Sunwoo Jae</h2>
+
+      <div class="platform-links">
+        <!-- 유니챗 작품 주소가 준비되면 span을 a 태그로 교체 -->
+        <!-- <span class="platform-placeholder">유니챗</span> -->
+
+        <!-- 크랙 작품 주소가 준비되면 span을 a 태그로 교체 
+        <span class="platform-placeholder">크랙</span> -->
+
+        <a
+          href="https://tikita.ai/ko/story/BWHH7E46?referrer=Z7272W"
+          target="_blank"
+          rel="noopener noreferrer"
+        >티키타</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- 연도 문구 삭제 / 저작권 설명 강제 줄바꿈 없음 -->
+  <footer class="site-footer">
+    <p class="copyright-title">COPYRIGHT NOTICE</p>
+    <p class="copyright-description">본 작품의 세계관·캐릭터 설정·스토리·창작 요소 및 HTML 구조·레이아웃·디자인의 무단 복제, 도용, 변형 및 재배포를 금합니다.</p>
+    <p class="creator-credit">Original Story &amp; Creative Design by</p>
+    <p class="creator-name">🤎⋆ ˚｡⋆୨୧아몬드송송୨୧⋆｡˚ ⋆🤎</p>
+  </footer>
+
+  <script>
+    const menu = document.getElementById("site-menu");
+    const aboutButton = document.getElementById("aboutButton");
+    const aboutCopy = document.getElementById("aboutCopy");
+    const themeButton = document.getElementById("theme-toggle");
+
+    // 작가소개: 메뉴를 닫거나 페이지를 이동하지 않고 아래로 펼침
+    aboutButton.addEventListener("click", () => {
+      const isExpanded = aboutButton.getAttribute("aria-expanded") === "true";
+
+      aboutButton.setAttribute("aria-expanded", String(!isExpanded));
+      aboutCopy.hidden = isExpanded;
+    });
+
+    // 이동용 링크를 선택하면 메뉴 닫기
+    menu.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", () => {
+        menu.open = false;
+      });
+    });
+
+    // 메뉴 바깥 클릭 시 닫기
+    document.addEventListener("click", (event) => {
+      if (!menu.contains(event.target)) {
+        menu.open = false;
+      }
+    });
+
+    // Escape 키로 메뉴 닫기
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && menu.open) {
+        menu.open = false;
+        menu.querySelector("summary").focus();
+      }
+    });
+
+    // 밝은 테마 / 어두운 테마 전환
+    themeButton.addEventListener("click", () => {
+      const isLight = document.body.classList.toggle("light");
+
+      themeButton.setAttribute("aria-pressed", String(isLight));
+      themeButton.setAttribute(
+        "aria-label",
+        isLight ? "어두운 테마로 전환" : "밝은 테마로 전환"
+      );
+    });
+
+    // name 속성 미지원 브라우저에서도 한 회차만 열기
+    const episodes = document.querySelectorAll(".episode");
+
+    episodes.forEach((episode) => {
+      episode.addEventListener("toggle", () => {
+        if (!episode.open) return;
+
+        episodes.forEach((other) => {
+          if (other !== episode && other.open) {
+            other.open = false;
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
